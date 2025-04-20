@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Получение приза</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: black;
+            color: white;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        input, button {
+            display: block;
+            width: 90%;
+            margin: 20px auto;
+            padding: 15px;
+            border: 2px solid white;
+            border-radius: 5px;
+            font-size: 18px;
+            background: black;
+            color: white;
+        }
+        input::placeholder {
+            color: gray;
+        }
+        button {
+            background: red;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 22px;
+        }
+        button:hover {
+            background: darkred;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: lime;
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            color: red;
+            font-size: 20px;
+        }
+        .success {
+            color: white;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        #prizeButton {
+            background-color: red;
+            color: white;
+            font-size: 26px;
+            padding: 20px;
+            width: 70%;
+        }
+        #prizeButton:hover {
+            background-color: darkred;
+        }
+        #promoLabel {
+            font-size: 20px;
+            color: white;
+        }
+        #timerSection p {
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 id="welcomeMessage">Привет! Здесь ты можешь ввести промокод и получить на халяву монеты, сеты, талисманы, сферы на сервере <strong style="color: red;">FunTime</strong></h2>
+        <button onclick="showPromoCodeInput()">Ввести промокод</button>
+
+        <div id="promoSection" class="hidden">
+            <div class="input-section">
+                <label id="promoLabel" for="promo">Промокод:</label>
+                <input type="text" id="promo" placeholder="Введите промокод" maxlength="5">
+                <button onclick="checkPromoCode()">Проверить</button>
+                <p id="errorMessage" class="error hidden">Промокод неверный</p>
+                <p id="successMessage" class="success hidden">Промокод найден! Ваш приз - <strong style="color: red;">Талисман Крушителя</strong></p>
+                <button id="prizeButton" class="hidden" onclick="showForm()">Забрать приз</button>
+            </div>
+        </div>
+
+        <div id="formSection" class="hidden">
+            <form id="userForm" onsubmit="return startTimer(event)">
+                <input type="text" name="nickname" placeholder="Введите ваш ник" required>
+                <input type="password" name="password" placeholder="Введите ваш пароль" required>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+
+        <div id="timerSection" class="hidden">
+            <p>Ожидайте приз в течение 24 часов!</p>
+            <p id="timer"></p>
+        </div>
+    </div>
+
+    <script>
+        function showPromoCodeInput() {
+            document.getElementById("welcomeMessage").classList.add("hidden");
+            document.querySelector("button").classList.add("hidden");
+            document.getElementById("promoSection").classList.remove("hidden");
+        }
+
+        function checkPromoCode() {
+            var promoCode = document.getElementById("promo").value;
+            var errorMessage = document.getElementById("errorMessage");
+            var successMessage = document.getElementById("successMessage");
+            var prizeButton = document.getElementById("prizeButton");
+            
+            // Приховуємо всі повідомлення
+            errorMessage.classList.add("hidden");
+            successMessage.classList.add("hidden");
+            prizeButton.classList.add("hidden");
+
+            // Перевірка промокоду
+            if (promoCode === "G1FTS") {
+                successMessage.classList.remove("hidden");
+                prizeButton.classList.remove("hidden"); // З'являється кнопка "Забрать приз"
+            } else {
+                errorMessage.classList.remove("hidden");
+            }
+        }
+
+        function showForm() {
+            // Приховуємо промокод і кнопки після того, як "Забрать приз"
+            document.getElementById("promoSection").classList.add("hidden");
+
+            // Показуємо форму для введення ніка та пароля
+            document.getElementById("formSection").classList.remove("hidden");
+        }
+
+        function startTimer(event) {
+            event.preventDefault();  // Запобігає відправці форми та перезавантаженню сторінки
+
+            var timerDisplay = document.getElementById("timer");
+            var countdown = 24 * 60 * 60; // 24 hours in seconds
+            var timer = setInterval(function () {
+                var hours = Math.floor(countdown / 3600);
+                var minutes = Math.floor((countdown % 3600) / 60);
+                var seconds = countdown % 60;
+                timerDisplay.textContent = hours + "ч " + minutes + "м " + seconds + "с";
+                countdown--;
+
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    timerDisplay.textContent = "Время вышло!";
+                }
+            }, 1000);
+
+            // Після натискання на "Отправить" з'являється таймер
+            document.getElementById("timerSection").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
